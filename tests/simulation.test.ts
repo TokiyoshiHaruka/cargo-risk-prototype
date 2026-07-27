@@ -37,9 +37,11 @@ describe("cargo risk simulation", () => {
     let state = createInitialState(42);
     state = selectContract(state, "med-supplies");
     state = selectRoute(state, "lantern");
-    const next = resolveEvent(state, "evade");
-    expect(next.events[0].choice).toBe("evade");
-    expect(next.credits).toBeLessThan(state.credits);
+    const hold = resolveEvent(state, "hold");
+    const evade = resolveEvent(state, "evade");
+    expect(hold.events[0].choice).toBe("hold");
+    expect(evade.events[0].choice).toBe("evade");
+    expect(evade.credits).toBeLessThan(hold.credits);
   });
 
   it("moves from contract selection to route selection without mutating the source", () => {

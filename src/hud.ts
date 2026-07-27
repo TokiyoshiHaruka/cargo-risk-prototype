@@ -99,7 +99,7 @@ export function createHud(root: HTMLElement, initial: SimulationState, scene: Ca
       const receipt = buildReceipt(state);
       const result = document.createElement("p");
       result.className = `result result-${receipt?.outcome ?? "loss"}`;
-      result.textContent = receipt ? `${receipt.outcome.toUpperCase()} · ${receipt.profit >= 0 ? "+" : ""}${receipt.profit} CR` : "No receipt";
+      result.textContent = receipt ? `${receipt.outcome.toUpperCase()} | ${receipt.profit >= 0 ? "+" : ""}${receipt.profit} CR` : "No receipt";
       panel.appendChild(result);
       panel.appendChild(button(receiptOpen ? "Hide run receipt" : "Inspect run receipt", "receipt"));
       panel.appendChild(button("Restart with new seed", "restart"));
