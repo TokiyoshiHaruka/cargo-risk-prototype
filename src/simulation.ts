@@ -1,4 +1,5 @@
 export type Phase = "contract" | "route" | "event" | "settlement";
+export type EventChoice = "hold" | "evade";
 
 export interface Contract {
   id: string;
@@ -28,6 +29,7 @@ export interface EventRecord {
   title: string;
   severity: "minor" | "major";
   action: "weather" | "pirates";
+  choice: EventChoice;
   roll: number;
   cargoLost: number;
   creditsLost: number;
@@ -140,7 +142,7 @@ export function toggleEscort(state: SimulationState): SimulationState {
   return { ...state, escort: !state.escort };
 }
 
-export function resolveEvent(state: SimulationState): SimulationState {
+export function resolveEvent(state: SimulationState, choice: EventChoice = "hold"): SimulationState {
   if (state.phase !== "event" || !state.selectedRouteId || !state.selectedContractId) return state;
   const route = state.routes.find((entry) => entry.id === state.selectedRouteId);
   const contract = state.contracts.find((entry) => entry.id === state.selectedContractId);
@@ -148,18 +150,24 @@ export function resolveEvent(state: SimulationState): SimulationState {
   const rng = createRng(state.seed + state.eventIndex * 7919 + route.id.length);
   const roll = rng();
   const escortReduction = state.escort ? 0.15 : 0;
-  const hostile = roll < Math.max(0.03, route.risk - escortReduction);
-  const cargoLost = hostile ? Math.max(1, Math.ceil(contract.cargoUnits * (state.escort ? 0.12 : 0.28))) : 0;
-  const creditsLost = hostile ? (state.escort ? 20 : 55) : 0;
+  const evadeReduction = choice === "evade" ? 0.1 : 0;
+  const hostile = roll < Math.max(0.03, route.risk - escortReduction - evadeReduction);
+  const cargoLost = hostile ? Math.max(1, Math.ceil(contract.cargoUnits * (state.escort ? 0.12 : choice === "evade" ? 0.18 : 0.28))) : 0;
+  const baseCreditsLost = hostile ? (state.escort ? 20 : choice === "evade" ? 35 : 55) : 0;
+  const decisionCost = choice === "evade" ? 12 : 0;
+  const creditsLost = baseCreditsLost + decisionCost;
   const event: EventRecord = {
     id: `${route.id}-${state.eventIndex}`,
     title: hostile ? "Contact on the route" : "Clean passage",
     severity: hostile ? (state.escort ? "minor" : "major") : "minor",
     action: hostile ? "pirates" : "weather",
+    choice,
     roll: Number(roll.toFixed(4)),
     cargoLost,
     creditsLost,
-    message: hostile ? `Interference cost ${cargoLost} cargo and ${creditsLost} credits.` : "The convoy held its line. No cargo lost.",
+    message: hostile
+      ? `${choice === "evade" ? "Evasive maneuver" : "Holding course"} cost ${cargoLost} cargo and ${creditsLost} credits.`
+      : `${choice === "evade" ? "Evasive maneuver" : "Holding course"} succeeded. No cargo lost.`,
   };
   const nextEvents = [...state.events, event];
   const nextCargo = clamp(state.cargo.units - cargoLost, 0, state.cargo.maxUnits);

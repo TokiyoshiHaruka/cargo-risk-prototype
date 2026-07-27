@@ -25,12 +25,21 @@ describe("cargo risk simulation", () => {
       state = selectContract(state, "reactor-parts");
       state = toggleEscort(state);
       state = selectRoute(state, "blackwater");
-      state = resolveEvent(state);
-      state = resolveEvent(state);
+      state = resolveEvent(state, "hold");
+      state = resolveEvent(state, "evade");
       return settleRun(state);
     };
     expect(play()).toEqual(play());
     expect(play()?.events).toHaveLength(2);
+  });
+
+  it("records the event choice and charges the evade decision", () => {
+    let state = createInitialState(42);
+    state = selectContract(state, "med-supplies");
+    state = selectRoute(state, "lantern");
+    const next = resolveEvent(state, "evade");
+    expect(next.events[0].choice).toBe("evade");
+    expect(next.credits).toBeLessThan(state.credits);
   });
 
   it("moves from contract selection to route selection without mutating the source", () => {
@@ -49,8 +58,8 @@ describe("cargo risk simulation", () => {
     state = toggleEscort(state);
     state = selectRoute(state, "blackwater");
     expect(state.credits).toBe(855);
-    state = resolveEvent(state);
-    state = resolveEvent(state);
+    state = resolveEvent(state, "evade");
+    state = resolveEvent(state, "hold");
     state = settleRun(state);
     expect(state.receipt?.escortUsed).toBe(true);
     expect(state.cargo.units).toBeGreaterThanOrEqual(0);
@@ -62,7 +71,7 @@ describe("cargo risk simulation", () => {
     let state = createInitialState(12);
     state = selectContract(state, "survey-drones");
     state = selectRoute(state, "lantern");
-    state = resolveEvent(resolveEvent(state));
+    state = resolveEvent(resolveEvent(state, "hold"), "hold");
     state = settleRun(state);
     expect(state.receipt).not.toBeNull();
     const restarted = restartRun(99);
@@ -75,8 +84,8 @@ describe("cargo risk simulation", () => {
     let state = createInitialState(42);
     state = selectContract(state, "reactor-parts");
     state = selectRoute(state, "long-haul");
-    state = resolveEvent(state);
-    state = resolveEvent(state);
+    state = resolveEvent(state, "hold");
+    state = resolveEvent(state, "evade");
     state = settleRun(state);
     expect(state.receipt).toMatchObject({
       seed: 42,
@@ -86,5 +95,7 @@ describe("cargo risk simulation", () => {
       cargoStart: 5,
     });
     expect(state.receipt?.profit).toEqual(state.receipt!.endingCredits - state.receipt!.startingCredits);
+    expect(state.receipt?.events[0].choice).toBe("hold");
+    expect(state.receipt?.events[1].choice).toBe("evade");
   });
 });
