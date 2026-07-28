@@ -24,11 +24,11 @@ npm run check
 npm run test:browser
 ```
 
-The browser suite starts Vite on `127.0.0.1:4173`, completes a seeded run, checks both event choices and the receipt, checks restart, and checks that the HUD remains readable on a mobile viewport. Screenshots are generated under `evidence/` for local inspection and are intentionally ignored by Git.
+The browser suite starts Vite on `127.0.0.1:4177` by default, completes a seeded run, checks both event choices and the receipt, checks restart, and checks that the HUD remains readable on a mobile viewport. Set `CARGO_RISK_PORT` when another local service needs that port. Screenshots are generated under `evidence/` for local inspection and are intentionally ignored by Git.
 
 Latest local receipt environment: Windows, Node `v22.14.0`, npm `10.9.2`.
-All listed commands exited with status `0`; browser verification used
-`CARGO_RISK_PORT=4175` so the existing Shared Convoy demo could remain online.
+All listed commands exited with status `0`; browser verification used the default
+isolated port `4177`.
 
 If Chromium is not installed, choose a writable cache outside the repository and run `npx playwright install chromium` with `PLAYWRIGHT_BROWSERS_PATH` set to that cache before running the browser suite.
 
