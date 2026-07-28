@@ -1,7 +1,8 @@
 import { readFile, stat, readdir } from "node:fs/promises";
 import { join, relative, extname } from "node:path";
+import { fileURLToPath } from "node:url";
 
-const root = new URL("..", import.meta.url).pathname.replace(/^\//, "").replaceAll("/", "\\");
+const root = fileURLToPath(new URL("..", import.meta.url));
 const failures = [];
 const forbidden = new Set(["node_modules", "dist", "test-results", "playwright-report"]);
 const secret = /BEGIN (?:RSA|OPENSSH|EC) PRIVATE KEY|AKIA[0-9A-Z]{16}|ghp_[A-Za-z0-9]{20,}/;
