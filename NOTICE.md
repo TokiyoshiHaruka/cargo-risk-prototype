@@ -1,6 +1,6 @@
 # Notices
 
-This is an original educational portfolio prototype by TokiyoshiHaruka. It is
+This is an original educational game prototype by TokiyoshiHaruka. It is
 not affiliated with Cloud Imperium Games, Roberts Space Industries, UEX Corp,
 or any other game or service referenced as inspiration.
 

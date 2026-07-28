@@ -1,13 +1,13 @@
 # Verification
 
-最終確認日: 2026-07-28
+最終確認日: 2026-07-29
 
 ## Acceptance checks
 
 | Check | Result | Evidence |
 | --- | --- | --- |
 | Simulation tests | PASS: 7 tests | `npm test` |
-| Hygiene negative controls | PASS: 5 tests | `npm test` |
+| Hygiene negative controls | PASS: 6 tests | `npm test` |
 | TypeScript and production build | PASS | `npm run build` |
 | Repository hygiene | PASS | `npm run check` |
 | Browser smoke tests | PASS: 2 tests | `npm run test:browser` |
