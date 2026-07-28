@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "node node_modules/vite/bin/vite.js",
     "build": "tsc -b && vite build",
-    "test": "vitest run",
+    "test": "vitest run && node --test tests/repo-hygiene.node.test.mjs",
     "test:browser": "playwright test",
     "check": "node scripts/check_repo.mjs"
   },

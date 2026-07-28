@@ -7,6 +7,7 @@
 | Check | Result | Evidence |
 | --- | --- | --- |
 | Simulation tests | PASS: 7 tests | `npm test` |
+| Hygiene negative controls | PASS: 5 tests | `npm test` |
 | TypeScript and production build | PASS | `npm run build` |
 | Repository hygiene | PASS | `npm run check` |
 | Browser smoke tests | PASS: 2 tests | `npm run test:browser` |
@@ -16,7 +17,7 @@
 ## Reproduce locally
 
 ```bash
-npm install
+npm ci
 npm test
 npm run build
 npm run check
@@ -24,6 +25,10 @@ npm run test:browser
 ```
 
 The browser suite starts Vite on `127.0.0.1:4173`, completes a seeded run, checks both event choices and the receipt, checks restart, and checks that the HUD remains readable on a mobile viewport. Screenshots are generated under `evidence/` for local inspection and are intentionally ignored by Git.
+
+Latest local receipt environment: Windows, Node `v22.14.0`, npm `10.9.2`.
+All listed commands exited with status `0`; browser verification used
+`CARGO_RISK_PORT=4175` so the existing Shared Convoy demo could remain online.
 
 If Chromium is not installed, choose a writable cache outside the repository and run `npx playwright install chromium` with `PLAYWRIGHT_BROWSERS_PATH` set to that cache before running the browser suite.
 

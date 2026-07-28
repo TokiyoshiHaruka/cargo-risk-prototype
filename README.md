@@ -25,7 +25,7 @@ FF14 の物資運搬、Star Citizen の航路リスク、Minecraft の資源ル�
 ## 起動
 
 ```bash
-npm install
+npm ci
 npm run dev
 ```
 
