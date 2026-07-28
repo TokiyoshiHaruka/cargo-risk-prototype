@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { execFile } from "node:child_process";
-import { mkdir, mkdtemp, rm, writeFile } from "node:fs/promises";
+import { mkdir, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import test from "node:test";
@@ -69,6 +69,14 @@ test("scanner reads JSON and rejects environment files", async () => {
     assert.ok(failures.includes("secret:config.json"));
     assert.ok(failures.includes("forbidden-env:.env"));
   });
+});
+
+
+test("public notice stays project-focused", async () => {
+  const notice = await readFile(join(process.cwd(), "NOTICE.md"), "utf8");
+  assert.doesNotMatch(notice, /\bportfolio\b/i);
+  const verification = await readFile(join(process.cwd(), "docs/VERIFICATION.md"), "utf8");
+  assert.match(verification, /PASS: 6 tests/);
 });
 
 
