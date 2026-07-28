@@ -72,9 +72,12 @@ test("scanner reads JSON and rejects environment files", async () => {
 });
 
 
-test("public notice stays project-focused", async () => {
-  const notice = await readFile(join(process.cwd(), "NOTICE.md"), "utf8");
-  assert.doesNotMatch(notice, /\bportfolio\b/i);
+test("public documentation stays project-focused", async () => {
+  const jobFraming = /\b(?:portfolio|interview|job[- ]?search|résumé)\b|面接|求職|就職|作品集|ポートフォリオ|履歴書|面试|求职|简历/iu;
+  for (const relative of ["README.md", "NOTICE.md", "AI_USAGE.md"]) {
+    const content = await readFile(join(process.cwd(), relative), "utf8");
+    assert.doesNotMatch(content, jobFraming, `${relative} must describe the project itself`);
+  }
   const verification = await readFile(join(process.cwd(), "docs/VERIFICATION.md"), "utf8");
   assert.match(verification, /PASS: 6 tests/);
 });
